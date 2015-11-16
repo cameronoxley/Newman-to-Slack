@@ -1,6 +1,6 @@
 <img src="newman-slack.png" />
 
-# Newman-to-Slack
+# Newman to Slack
 Runs a Newman test script and outputs the summary to a Slack webhook
 
 ####Getting Started:
