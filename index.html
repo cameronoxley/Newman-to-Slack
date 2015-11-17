@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Newman to Slack by cameronoxley</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Newman to Slack</h1>
+      <h2 class="project-tagline">Runs a Newman test script and outputs the summary to a Slack webhook</h2>
+      <a href="https://github.com/cameronoxley/Newman-to-Slack" class="btn">View on GitHub</a>
+      <a href="https://github.com/cameronoxley/Newman-to-Slack/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/cameronoxley/Newman-to-Slack/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="https://raw.githubusercontent.com/cameronoxley/Newman-to-Slack/master/newman-slack.png"></p>
+
+<h1>
+<a id="newman-to-slack" class="anchor" href="#newman-to-slack" aria-hidden="true"><span class="octicon octicon-link"></span></a>Newman to Slack</h1>
+
+<p>Runs a Newman test script and outputs the summary to a Slack webhook</p>
+
+<h4>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started:</h4>
+
+<ol>
+<li>Install <a href="https://github.com/postmanlabs/newman">Newman</a> <code>$ npm install -g newman</code> (Requires <a href="https://nodejs.org/en/download/package-manager/">Node</a>)</li>
+<li>Create a new Slack <a href="https://my.slack.com/services/new/incoming-webhook/">incoming webhook</a> and copy your webhook URL</li>
+<li>Download the latest <a href="https://github.com/cameronoxley/Newman-to-Slack/archive/v1.0.zip">release</a> of Newman to Slack</li>
+<li>Run <code>$ ./Newman-to-Slack.sh</code>
+</li>
+</ol>
+
+<p>Thats it!</p>
+
+<h4>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4>
+
+<div class="highlight highlight-source-shell"><pre>Newman-to-Slack.sh -- Runs a Newman <span class="pl-c1">test</span> script and outputs the summary to a Slack webhook
+
+Usage:
+    -h             show this <span class="pl-c1">help</span> text
+    -c  [file]     postman collection to run
+    -u  [url]      postman collection url to run
+    -e  [file]     postman environment to reference
+    -g  [file]     postman global to reference
+    -w  [url]      slack webhook to call
+    -a  [<span class="pl-c1">command</span>]  additional Newman <span class="pl-c1">command</span>
+    -S             output summary
+    -N             disable webhook call
+    -C             disable colorized output to screen, use with -S or -V
+    -v             current script version
+    -V             verbose
+
+Where one of: -c [file] or -u [url] is required</pre></div>
+
+<h4>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h4>
+
+<h6>
+<a id="run-a-collection-and-post-the-summary-to-a-slack-channel" class="anchor" href="#run-a-collection-and-post-the-summary-to-a-slack-channel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a collection and post the summary to a Slack channel</h6>
+
+<div class="highlight highlight-source-shell"><pre>$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.slack.com/services/my/private/url</pre></div>
+
+<h6>
+<a id="run-a-url-collection-and-post-the-summary-to-a-slack-channel" class="anchor" href="#run-a-url-collection-and-post-the-summary-to-a-slack-channel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a url collection and post the summary to a Slack channel</h6>
+
+<div class="highlight highlight-source-shell"><pre>$ ./Newman-to-Slack.sh -u https://www.getpostman.com/collections/cb208e7e64056f5294e5 -w https://hooks.slack.com/services/my/private/url</pre></div>
+
+<h6>
+<a id="run-a-collection-with-a-custom-environment-and-post-the-summary-to-a-slack-channel" class="anchor" href="#run-a-collection-with-a-custom-environment-and-post-the-summary-to-a-slack-channel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a collection with a custom environment and post the summary to a Slack channel</h6>
+
+<div class="highlight highlight-source-shell"><pre>$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -e myenvironment.postman_environment -w https://hooks.slack.com/services/my/private/url</pre></div>
+
+<h6>
+<a id="run-a-collection-with-a-custom-newman-command-and-post-the-summary-to-a-slack-channel" class="anchor" href="#run-a-collection-with-a-custom-newman-command-and-post-the-summary-to-a-slack-channel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a collection with a custom Newman command and post the summary to a Slack channel</h6>
+
+<div class="highlight highlight-source-shell"><pre>$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -e myenvironment.postman_environment -w https://hooks.slack.com/services/my/private/url -a <span class="pl-s"><span class="pl-pds">"</span>-R -E 'output.html'<span class="pl-pds">"</span></span></pre></div>
+
+<h6>
+<a id="run-a-collection-only-display-newman-summary-without-posting-to-slack-and-disable-colourised-output" class="anchor" href="#run-a-collection-only-display-newman-summary-without-posting-to-slack-and-disable-colourised-output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run a collection, only display Newman summary (without posting to Slack) and disable colourised output</h6>
+
+<div class="highlight highlight-source-shell"><pre>$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -N -C</pre></div>
+
+<p><sub>Thanks to <a href="https://github.com/kiichi">@kiichi</a> for the <a href="https://gist.github.com/kiichi/938ea910f88bf43b0db1">original gist</a></sub></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/cameronoxley/Newman-to-Slack">Newman to Slack</a> is maintained by <a href="https://github.com/cameronoxley">cameronoxley</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
