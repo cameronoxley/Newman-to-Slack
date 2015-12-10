@@ -14,7 +14,7 @@ additional=''
 summarize=false
 sendWebhook=true
 verbose=false
-version='1.0.1'
+version='1.0.2'
 
 usage="$(basename "$0") -- Runs a Newman test script and outputs the summary to a Slack webhook
 
