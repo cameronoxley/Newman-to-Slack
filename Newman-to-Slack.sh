@@ -82,7 +82,7 @@ if [ -z "$collection" ] && [ -z "$url" ] ; then
 fi
 
 # check if verbose and summary are set, disable summary
-if [ "$summarize" = true ] && [ "$verbose" = trues ] ; then
+if [ "$summarize" = true ] && [ "$verbose" = true ] ; then
     summarize=false
 fi
 
