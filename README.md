@@ -3,64 +3,46 @@
 # Newman to Slack
 Runs a Newman test script and outputs the summary to a Slack webhook
 
-####Getting Started:
+##Getting Started
 
-1. [Install Newman](https://github.com/postmanlabs/newman) ```$ npm install -g newman``` (Requires [Node](https://nodejs.org/en/download/package-manager/))
+1. [Install Newman](https://github.com/postmanlabs/newman): ```$ npm install -g newman``` (Requires [Node](https://nodejs.org/en/download/package-manager/))
 2. [Create a new Slack incoming webhook](https://my.slack.com/services/new/incoming-webhook/) and copy your webhook URL
 3. [Download the latest release](https://github.com/cameronoxley/Newman-to-Slack/archive/v1.0.1.zip) of Newman to Slack
 4. Run `$ ./Newman-to-Slack.sh`
 
 Thats it!
 
-####Usage
+###Usage
 
 ```bash
 Newman-to-Slack.sh -- Runs a Newman test script and outputs the summary to a Slack webhook
 
-Usage:
-    -h 			   show this help text
-    -c 	[file]     postman collection to run
-    -u 	[url]      postman collection url to run
-    -e 	[file]     postman environment to reference
-    -g 	[file]     postman global to reference
-    -w 	[url] 	   slack webhook to call
-    -a 	[command]  additional Newman command
-    -S 			   output summary
-    -N  		   disable webhook call
-    -C  		   disable colorized output to screen, use with -S or -V
-    -v  		   current script version
-    -V  		   verbose
+    Options:
+        -h, --help                        Show this help text
+        -c, --collection      [arg]       URL or path to a Postman Collection
+        -f, --config          [file]      Run a bash configuration environment (overwrites passed args)
+        -e, --environment     [file]      Postman Environment to reference
+        -w, --webhook         [url]       Slack Webhook URL
+        -g, --global          [file]      Postman Global Environment
+        -a, --additional      [command]   Additional Newman command
+        -v, --verbose         [-v -v]     Verbose (add more -v for increased verbosity)
+        -V, --version                     Version
 
-Where one of: -c [file] or -u [url] is required
+    Where: -c [arg] and -w [url] is required
 ```
 
-####Examples
+###Examples
 
 ######Run a collection and post the summary to a Slack channel
 
 ```bash
-$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.slack.com/services/my/private/url
+$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.slack.com/services/url
 ```
 
-######Run a url collection and post the summary to a Slack channel
+<img src="newman-slack-output.png" />
 
-```bash
-$ ./Newman-to-Slack.sh -u https://www.getpostman.com/collections/cb208e7e64056f5294e5 -w https://hooks.slack.com/services/my/private/url
-```
+## Newman v3.1+
 
-######Run a collection with a custom environment and post the summary to a Slack channel
+The latest version of Newman is required to run Newman-to-Slack.
 
-```bash
-$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -e myenvironment.postman_environment -w https://hooks.slack.com/services/my/private/url
-```
-######Run a collection with a custom Newman command and post the summary to a Slack channel
-
-```bash
-$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -e myenvironment.postman_environment -w https://hooks.slack.com/services/my/private/url -a "-R -E 'output.html'"
-```
-
-######Run a collection, only display Newman summary (without posting to Slack) and disable colourised output
-
-```bash
-$ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -N -C
-```
+See the [migration guide](https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md) for more information.
