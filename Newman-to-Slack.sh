@@ -15,8 +15,9 @@ config_file=''
 config_file_secured=''
 
 # global vars
-verbose=0
+newman_required_ver="3.1.0"
 newman_args='--reporter-cli-no-failures --reporter-cli-no-assertions --reporter-cli-no-console --no-color'
+verbose=0
 
 # show the version number
 version() {
@@ -205,10 +206,9 @@ validate_install() {
     command -v newman >/dev/null 2>&1 || { echo >&2 "Newman is required. See https://github.com/postmanlabs/newman. Aborting"; exit 1;}
 
     # check version of newman is correct
-    currentver="$(newman --version | head -n1 | cut -d" " -f4)"
-    requiredver="3.1.0"
-    if [ "$(printf "$requiredver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$requiredver" ]; then 
-        echo "A newer version of Newman ($requiredver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
+    local currentver="$(newman --version | head -n1 | cut -d" " -f4)"
+    if [ "$(printf "$newman_required_ver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$newman_required_ver" ]; then 
+        echo "A newer version of Newman ($newman_required_ver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
         exit 1;
     fi
 }
