@@ -192,24 +192,24 @@ load_config () {
     declare overrideable_vars=( '^env=' '^collection=' '^webhook=' '^global=' '^additional_args=' )
     declare config_filter='^#|^[^ ]*=[^;]*'
 
-	if [ -f "$config_file" ] ; then
+    if [ -f "$config_file" ] ; then
 
-		# check if the file contains bash commands and other junk
-		if egrep -q -v "$config_filter" "$config_file"; then
+        # check if the file contains bash commands and other junk
+        if egrep -q -v "$config_filter" "$config_file"; then
 
-			echo "WARN: Cleaning config file" >&2
+            echo "WARN: Cleaning config file" >&2
 
-			# filter to a clean file
-			egrep "$config_filter" "$config_file" > "$config_file_secured"
-			config_file="$config_file_secured"
-		fi
+            # filter to a clean file
+            egrep "$config_filter" "$config_file" > "$config_file_secured"
+            config_file="$config_file_secured"
+        fi
 
-		# load the file and only override the vars we accept
-		for i in "${overrideable_vars[@]}"
-		do
-			# bash 3.2 fix for source process substitution
-			source /dev/stdin <<<"$(grep "$i" "$config_file")"
-		done
+        # load the file and only override the vars we accept
+        for i in "${overrideable_vars[@]}"
+        do
+            # bash 3.2 fix for source process substitution
+            source /dev/stdin <<<"$(grep "$i" "$config_file")"
+        done
 
         # output verbose info
         if [ "$verbose" -gt 2 ] ; then
@@ -218,10 +218,10 @@ load_config () {
             echo 'Loaded Config file' >&2
         fi
 
-	else
+    else
         printf '\nERROR: Could not locate file %s.\n\n' "$config_file" >&2
-		exit -1
-	fi
+        exit -1
+    fi
 }
 
 # validate required args and check options
@@ -248,7 +248,7 @@ validate_check_args() {
 # preprend newman args to commands
  prepend_newman_args () {
 
-	if [ -n "$url" ] ; then
+    if [ -n "$url" ] ; then
         url="-u $url"
     fi
 
@@ -278,8 +278,8 @@ main () {
 
     validate_check_args
 
-	# prepend newman arguments to vars
-	prepend_newman_args
+    # prepend newman arguments to vars
+    prepend_newman_args
 
     # call newman
     local output=$(newman $collection $env $url $global $additional_args $strip_colour)
