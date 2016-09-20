@@ -8,22 +8,19 @@ collection=''
 env=''
 global=''
 webhook=''
-url=''
-additional_args=''
+additional=''
 
 # config environment
 config_file=''
 config_file_secured=''
 
 # global vars
-strip_colour=''
-summarize=false
 verbose=0
-send_webhook=true
+newman_args='--reporter-cli-no-failures --reporter-cli-no-assertions --reporter-cli-no-console --no-color'
 
 # show the version number
 version() {
-    echo '1.1.1' >&2
+    echo '2.0.0' >&2
 }
 
 # show the help and usage
@@ -33,28 +30,24 @@ show_help() {
 
     usage="$script -- Runs a Newman test script and outputs the summary to a Slack webhook
 
-    options:
-        -h, --help                        show this help text
-        -c, --collection      [file]      postman collection to run
-        -r, --config          [file]      run a bash configuration environment (overwrites passed args)
-        -u, --url             [url]       postman collection url to run
-        -e, --environment     [file]      postman environment to reference
-        -w, --slack_webhook   [url]       slack webhook to call
-        -g, --global          [file]      postman global to reference
-        -a, --newman_command  [command]   additional Newman command
-        -S, --summary                     output summary
-        -N, --no_webhook                  disable webhook call (prints summary)
-        -C, --no_color                    disable colorized output to screen, use with -S or -V
-        -v, --verbose         [-v -v]     verbose add more -v for increased verbosity
-        -V, --version                     version
+    Options:
+        -h, --help                        Show this help text
+        -c, --collection      [arg]       URL or path to a Postman Collection
+        -f, --config          [file]      Run a bash configuration environment (overwrites passed args)
+        -e, --environment     [file]      Postman Environment to reference
+        -w, --webhook         [url]       Slack Webhook URL
+        -g, --global          [file]      Postman Global Environment
+        -a, --additional      [command]   Additional Newman command
+        -v, --verbose         [-v -v]     Verbose (add more -v for increased verbosity)
+        -V, --version                     Version
 
-    Where one of: -c [file] or -u [url] is required
+    Where: -c [arg] and -w [url] is required
 
-    examples:
+    Examples:
 
-    $ $script -c \"mycollection.json.postman_collection\" -w \"https://hooks.slack.com/services/my/private/url\" -e \"myenvironment.postman_environment\"
-    $ $script -u \"https://www.getpostman.com/collections/\" -w \"https://hooks.slack.com/services/my/private/url\" -a \"-R -E 'output.html'\"
-    $ $script -r \"config.cfg\"
+    $ $script -c \"mycollection.json.postman_collection\" -w \"https://hooks.slack.com/services/url\" -e \"myenvironment.postman_environment\"
+    $ $script -c \"https://www.getpostman.com/collections/\" -w \"https://hooks.slack.com/services/url\" -a \"--ignore-redirects\"
+    $ $script -f \"config.config\"
     "
 
     echo "$usage" >&2
@@ -90,21 +83,9 @@ parse_args() {
                 show_help
                 exit
                 ;;
-            -C|--no_color) # do this first for error messages
-                strip_colour='-C '
-                ;;
             -c|--collection)
                 if [ -n "$2" ]; then
                     collection=$2
-                    shift
-                else
-                    fail_option_arg "$arg"
-                    exit 1
-                fi
-                ;;
-            -u|--url)
-                if [ -n "$2" ]; then
-                    url=$2
                     shift
                 else
                     fail_option_arg "$arg"
@@ -129,7 +110,7 @@ parse_args() {
                     exit 1
                 fi
                 ;;
-            -w|--slack_webhook)
+            -w|--webhook)
                 if [ -n "$2" ]; then
                     webhook=$2
                     shift
@@ -138,16 +119,16 @@ parse_args() {
                     exit 1
                 fi
                 ;;
-            -a|--newman_command)
+            -a|--additional)
                 if [ -n "$2" ]; then
-                    additional_args=$2
+                    additional=$2
                     shift
                 else
                     fail_option_arg "$arg"
                     exit 1
                 fi
                 ;;
-            -r|--config)
+            -f|--config)
                 if [ -n "$2" ]; then
                     config_file=$2
                     config_file_secured="/tmp/$config_file" #FIXME: Use mktemp for temporary files, always cleanup with a trap.
@@ -156,13 +137,6 @@ parse_args() {
                     fail_option_arg "$arg"
                     exit 1
                 fi
-                ;;
-            -N|--no_webhook)
-                send_webhook=false
-                summarize=true
-                ;;
-            -S|--summarize)
-                summarize=true
                 ;;
             -V|--version)
                 version
@@ -189,7 +163,7 @@ parse_args() {
 # fetches the source config
 load_config () {
 
-    declare overrideable_vars=( '^env=' '^collection=' '^webhook=' '^global=' '^additional_args=' )
+    declare overrideable_vars=( '^env=' '^collection=' '^webhook=' '^global=' '^additional=' )
     declare config_filter='^#|^[^ ]*=[^;]*'
 
     if [ -f "$config_file" ] ; then
@@ -224,33 +198,34 @@ load_config () {
     fi
 }
 
+# calidates required programs
+validate_install() {
+
+    # check newman is installed
+    command -v newman >/dev/null 2>&1 || { echo >&2 "Newman is required. See https://github.com/postmanlabs/newman. Aborting"; exit 1;}
+
+    # check version of newman is correct
+    currentver="$(newman --version | head -n1 | cut -d" " -f4)"
+    requiredver="3.1.0"
+    if [ "$(printf "$requiredver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$requiredver" ]; then 
+        echo "A newer version of Newman ($requiredver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
+        exit 1;
+    fi
+}
+
 # validate required args and check options
 validate_check_args() {
     
     # validate required args
-    if [ -z "$collection" ] && [ -z "$url" ] ; then # check one of -c and -u being called
-        printf "\nERROR: One of -c [file] or -u [url] is required\n\n" >&2
+    if [ -z "$collection" ] || [ -z "$webhook" ] ; then # check one of -c and -u being called
+        printf "\nERROR: One of -c [arg] or -w [url] is required\n\n" >&2
         show_help
         exit 1
-
-    elif [ -n "$collection" ] && [ -n "$url" ] ; then # check against both -c and -u being called
-        printf "\nERROR: Only one of -c [file] or -u [url] is required\n\n" >&2
-        show_help
-        exit 1
-    fi
-
-    # if verbose and summary are set, disable summary
-    if [ "$summarize" = true ] && [ "$verbose" -gt 0 ] ; then
-        summarize=false
     fi
 }
 
-# preprend newman args to commands
+# prepend newman args to commands
  prepend_newman_args () {
-
-    if [ -n "$url" ] ; then
-        url="-u $url"
-    fi
 
     if [ -n "$global" ] ; then
         global="-g $global"
@@ -259,16 +234,15 @@ validate_check_args() {
     if [ -n "$env" ] ; then
         env="-e $env"
     fi
-
-    if [ -n "$collection" ] ; then
-        collection="-c $collection"
-    fi
 }
 
 # process the script
 main () {
 
-    #load args
+    # validate newman install
+    validate_install
+
+    # load args
     parse_args "$@"
 
     # check if we need to load the config
@@ -276,36 +250,24 @@ main () {
         load_config
     fi
 
+    # validate arguments
     validate_check_args
 
     # prepend newman arguments to vars
     prepend_newman_args
 
     # call newman
-    local output=$(newman $collection $env $url $global $additional_args $strip_colour)
+    local output=$(newman run $collection $env $url $global $additional_args $newman_args)
 
     # output verbose file
     if [ "$verbose" -gt 0 ] ; then
         echo "$output" >&2
     fi
 
-    # only get summary lines
-    local summary=$(echo "$output" | awk '/^Summary:/,/^%Total/ {print}')
+    date=`date +%F\ %r`
 
-    # output summary if set
-    if [ "$summarize" = true ] ; then
-        echo "$summary"
-    fi
-
-    # call webhook
-    if [ "$send_webhook" = true ] ; then
-
-        # remove colour from file
-        local no_color=$(echo "$summary" | perl -pe 's/\x1b\[[0-9;]*m//g')
-
-        # post to slack (originally forked from https://gist.github.com/kiichi/938ea910f88bf43b0db1)
-        curl -X POST --data-urlencode 'payload={"text": "```'"$no_color"'```"}' $webhook
-    fi
+    # post to slack
+    curl -X POST --data-urlencode 'payload={"text": "'"$date"':```'"$output"'```"}' $webhook
 }
 
 # initialize script
