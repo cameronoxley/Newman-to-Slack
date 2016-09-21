@@ -5,7 +5,7 @@ set -e
 
 # config overridable args
 collection=''
-env=''
+environment=''
 global=''
 webhook=''
 additional=''
@@ -15,13 +15,13 @@ config_file=''
 config_file_secured=''
 
 # global vars
-newman_required_ver="3.1.0"
+newman_required_ver='3.1.0'
 newman_args='--reporter-cli-no-failures --reporter-cli-no-assertions --reporter-cli-no-console --no-color'
 verbose=0
 
 # show the version number
 version() {
-    echo '2.0.0' >&2
+    echo '2.0.0'
 }
 
 # show the help and usage
@@ -51,7 +51,7 @@ show_help() {
     $ $script -f \"config.config\"
     "
 
-    echo "$usage" >&2
+    echo "$usage"
 }
 
 # fail an arg that takes an option argument
@@ -60,6 +60,7 @@ fail_option_arg() {
 
     printf '\nERROR: %s requires a non-empty option argument.\n\n' "$arg_name" >&2
     show_help
+    exit 1
 }
 
 # parse opts
@@ -82,7 +83,7 @@ parse_args() {
         case $arg in
             -h|-\?|--help) # call a "show_help" function to display a synopsis, then exit.
                 show_help
-                exit
+                exit 0
                 ;;
             -c|--collection)
                 if [ -n "$2" ]; then
@@ -95,7 +96,7 @@ parse_args() {
                 ;;
             -e|--environment)
                 if [ -n "$2" ]; then
-                    env=$2
+                    environment=$2
                     shift
                 else
                     fail_option_arg "$arg"
@@ -141,7 +142,7 @@ parse_args() {
                 ;;
             -V|--version)
                 version
-                exit 1
+                exit 0
                 ;;
             -v|--verbose)
                 verbose=$((verbose + 1)) # Each -v argument adds 1 to verbosity.
@@ -164,7 +165,7 @@ parse_args() {
 # fetches the source config
 load_config () {
 
-    declare overrideable_vars=( '^env=' '^collection=' '^webhook=' '^global=' '^additional=' )
+    declare overrideable_vars=( '^environment=' '^collection=' '^webhook=' '^global=' '^additional=' )
     declare config_filter='^#|^[^ ]*=[^;]*'
 
     if [ -f "$config_file" ] ; then
@@ -188,14 +189,14 @@ load_config () {
 
         # output verbose info
         if [ "$verbose" -gt 2 ] ; then
-            printf '\nLoaded Config file:\n\n %s \n\n' "$(cat $config_file)" >&2
+            printf '\nLoaded Config file:\n\n %s \n\n' "$(cat $config_file)"
         elif [ "$verbose" -gt 1 ] ; then
-            echo 'Loaded Config file' >&2
+            echo 'Loaded Config file'
         fi
 
     else
         printf '\nERROR: Could not locate file %s.\n\n' "$config_file" >&2
-        exit -1
+        exit 1
     fi
 }
 
@@ -209,7 +210,7 @@ validate_install() {
     local currentver="$(newman --version | head -n1 | cut -d" " -f4)"
     if [ "$(printf "$newman_required_ver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$newman_required_ver" ]; then 
         echo "A newer version of Newman ($newman_required_ver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
-        exit 1;
+        exit 1
     fi
 }
 
@@ -261,7 +262,7 @@ main () {
 
     # output verbose file
     if [ "$verbose" -gt 0 ] ; then
-        echo "$output" >&2
+        echo "$output"
     fi
 
     date=`date +%F\ %r`
