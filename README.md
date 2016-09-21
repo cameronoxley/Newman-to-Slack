@@ -2,6 +2,7 @@
 
 # Newman to Slack
 Runs a Newman test script and outputs the summary to a Slack webhook 
+
 [![Build Status](https://travis-ci.org/cameronoxley/Newman-to-Slack.svg?branch=master)](https://travis-ci.org/cameronoxley/Newman-to-Slack)
 
 ##Getting Started
