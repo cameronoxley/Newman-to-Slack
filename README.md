@@ -9,7 +9,7 @@ Runs a Newman test script and outputs the summary to a Slack webhook
 
 1. [Install Newman](https://github.com/postmanlabs/newman): ```$ npm install -g newman``` (Requires [Node 4+](https://nodejs.org/en/download/package-manager/))
 2. [Create a new Slack incoming webhook](https://my.slack.com/services/new/incoming-webhook/) and copy your webhook URL
-3. [Download the latest release](https://github.com/cameronoxley/Newman-to-Slack/releases) of Newman to Slack
+3. [Download the latest release](https://github.com/cameronoxley/Newman-to-Slack/releases/latest) of Newman to Slack
 4. Run `$ ./Newman-to-Slack.sh`
 
 Thats it!
