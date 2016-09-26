@@ -6,4 +6,4 @@ before_install:
 script:
   - bats --tap test/
 after_script:
-  - echo ./Newman-to-Slack.sh
+  - echo "`./Newman-to-Slack.sh`"
