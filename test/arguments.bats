@@ -23,19 +23,19 @@
 @test "should print required args when invalid is passed" {
     run ./Newman-to-Slack.sh
     [ "$status" -eq 1 ]
-    echo "$output" | grep "ERROR: One of"
+    echo "$output | grep 'ERROR: -c [arg] and -w [url] are required'"
 }
 
 @test "should print required args when only one of required args is passed" {
     run ./Newman-to-Slack.sh -w http://
     [ "$status" -eq 1 ]
-    echo "$output" | grep "ERROR: One of"
+    echo "$output | grep 'ERROR: -c [arg] and -w [url] are required'"
 }
 
 @test "should fail for a non-empty option argument when argument isnt passed" {
     run ./Newman-to-Slack.sh -e
     [ "$status" -eq 1 ]
-    echo "$output" | grep "ERROR: -e requires a non-empty option argument."
+    echo "$output | grep 'ERROR: -e requires a non-empty option argument.'"
 }
 
 @test "should print error when cant find config file" {
