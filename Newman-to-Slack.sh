@@ -21,7 +21,7 @@ verbose=0
 
 # show the version number
 version() {
-    echo '2.0.0'
+    echo '2.0.1'
 }
 
 # show the help and usage
