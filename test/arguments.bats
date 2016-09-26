@@ -1,8 +1,6 @@
 #!/usr/bin/env bats
 
-@test "should always pass when test is run" {
-    run ./Newman-to-Slack.sh -V
-    echo "$output" >&2
+@test "should always pass when test is run (control test)" {
     result="$(echo 2 + 2 | bc)"
     [ "${result}" -eq 4 ]
 }
@@ -17,7 +15,7 @@
 @test "should print version number when -V and --version are passed" {
     run ./Newman-to-Slack.sh -V
     [ "$status" -eq 0 ]
-    [ $(expr "$output" : "[0-9][0-9.][0-9.]*") -ne 0 ]
+    [ $(expr "$output" : "[2][0.]*") -ne 0 ]
 }
 
 @test "should print help when -h and --help are passed" {
