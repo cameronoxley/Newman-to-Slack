@@ -42,7 +42,7 @@ show_help() {
         -v, --verbose         [-v -v]     Verbose (add more -v for increased verbosity)
         -V, --version                     Version
 
-    Where: -c [arg] and -w [url] is required
+    Where: -c [arg] and -w [url] are required
 
     Examples:
 
@@ -152,7 +152,7 @@ parse_args() {
                 break
                 ;;
             -?*)
-                printf 'WARN: Unknown option (ignored): %s\n' "$arg" >&2
+                printf '\nWARN: Unknown option (ignored): %s\n' "$arg" >&2
                 ;;
             *)  # default case: If no more options then break out of the loop.
                 break
@@ -173,7 +173,7 @@ load_config () {
         # check if the file contains bash commands and other junk
         if egrep -q -v "$config_filter" "$config_file"; then
 
-            echo "WARN: Cleaning config file" >&2
+            echo "\nWARN: Cleaning config file" >&2
 
             # filter to a clean file
             egrep "$config_filter" "$config_file" > "$config_file_secured"
@@ -191,7 +191,7 @@ load_config () {
         if [ "$verbose" -gt 2 ] ; then
             printf '\nLoaded Config file:\n\n %s \n\n' "$(cat $config_file)"
         elif [ "$verbose" -gt 1 ] ; then
-            echo 'Loaded Config file'
+            echo '\nLoaded Config file'
         fi
 
     else
@@ -204,12 +204,15 @@ load_config () {
 validate_install() {
 
     # check newman is installed
-    command -v newman >/dev/null 2>&1 || { echo >&2 "Newman is required. See https://github.com/postmanlabs/newman. Aborting"; exit 1;}
+    command -v newman >/dev/null 2>&1 || { echo >&2 "\nERROR: Newman is required. See https://github.com/postmanlabs/newman. Aborting"; exit 1;}
+
+    # check curl is installed
+    command -v curl >/dev/null 2>&1 || { echo >&2 "\nERROR: cURL is required. See https://curl.haxx.se/download.html. Aborting"; exit 1;}
 
     # check version of newman is correct
     local currentver="$(newman --version | head -n1 | cut -d" " -f4)"
     if [ "$(printf "$newman_required_ver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$newman_required_ver" ]; then 
-        echo "A newer version of Newman ($newman_required_ver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
+        echo "\nERROR: A newer version of Newman ($newman_required_ver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
         exit 1
     fi
 }
@@ -219,7 +222,7 @@ validate_check_args() {
     
     # validate required args
     if [ -z "$collection" ] || [ -z "$webhook" ] ; then # check one of -c and -u being called
-        printf "\nERROR: One of -c [arg] or -w [url] is required\n\n" >&2
+        printf "\nERROR: -c [arg] and -w [url] are required\n\n" >&2
         show_help
         exit 1
     fi
