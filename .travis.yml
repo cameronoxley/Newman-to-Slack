@@ -5,3 +5,5 @@ before_install:
   - sudo apt-get install -qq bats
 script:
   - bats --tap test/
+after_script:
+  - echo ./Newman-to-Slack.sh
