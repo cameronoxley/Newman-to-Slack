@@ -43,6 +43,9 @@ $ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.
 
 <img src="newman-slack-output.png" />
 
+## Issues
+Permission issues? Try `chmod 744 Newman-to-Slack.sh` first.
+
 ## Changelog
 
 View the [Changelog](https://github.com/cameronoxley/Newman-to-Slack/blob/master/CHANGELOG.md)
