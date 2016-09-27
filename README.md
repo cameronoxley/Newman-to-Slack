@@ -4,11 +4,10 @@
 Runs a Newman test script and outputs the summary to a Slack webhook 
 
 [![Build Status](https://travis-ci.org/cameronoxley/Newman-to-Slack.svg?branch=master)](https://travis-ci.org/cameronoxley/Newman-to-Slack)
-[![Newman Version](https://img.shields.io/badge/newman-v3.1.0-blue.svg)](https://github.com/postmanlabs/newman/releases)
 
 ##Getting Started
 
-1. [Install Newman](https://github.com/postmanlabs/newman): ```$ npm install -g newman``` (Requires [Node 4+](https://nodejs.org/en/download/package-manager/))
+1. [Install Newman v3+](https://github.com/postmanlabs/newman): ```$ npm install -g newman``` (Requires [Node v4+](https://nodejs.org/en/download/package-manager/))
 2. [Create a new Slack incoming webhook](https://my.slack.com/services/new/incoming-webhook/) and copy your webhook URL
 3. [Download the latest release](https://github.com/cameronoxley/Newman-to-Slack/releases/latest) of Newman to Slack
 4. Run `$ ./Newman-to-Slack.sh`
@@ -45,14 +44,17 @@ $ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.
 <img src="newman-slack-output.png" />
 
 ## Issues
-Permission issues? Try `chmod 744 Newman-to-Slack.sh` first.
+- Permission issues? Try `chmod 744 Newman-to-Slack.sh` first.
+- Empty `````` output in Slack? Check Newman & Node versions.
+
+### Newman v3.1+
+The [latest version](https://github.com/postmanlabs/newman/releases) of Newman is required to run Newman-to-Slack.
+
+See the [migration guide](https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md) for more information.
+
+### Node v4+
+Newman v3+ requires that [Node v4+](https://nodejs.org/en/download/package-manager/) is installed.
 
 ## Changelog
 
 View the [Changelog](https://github.com/cameronoxley/Newman-to-Slack/blob/master/CHANGELOG.md)
-
-## Newman v3.1+
-
-The latest version of Newman is required to run Newman-to-Slack.
-
-See the [migration guide](https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md) for more information.

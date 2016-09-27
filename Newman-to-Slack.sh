@@ -16,12 +16,13 @@ config_file_secured=''
 
 # global vars
 newman_required_ver='3.1.0'
+node_required_ver='4.0.0'
 newman_args='--reporter-cli-no-failures --reporter-cli-no-assertions --reporter-cli-no-console --no-color'
 verbose=0
 
 # show the version number
 version() {
-    echo '2.0.1'
+    echo '2.1.0'
 }
 
 # show the help and usage
@@ -210,9 +211,16 @@ validate_install() {
     command -v curl >/dev/null 2>&1 || { echo >&2 "\nERROR: cURL is required. See https://curl.haxx.se/download.html. Aborting"; exit 1;}
 
     # check version of newman is correct
-    local currentver="$(newman --version | head -n1 | cut -d" " -f4)"
-    if [ "$(printf "$newman_required_ver\n$currentver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$currentver" ] && [ "$currentver" != "$newman_required_ver" ]; then 
-        echo "\nERROR: A newer version of Newman ($newman_required_ver) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting"
+    local current_newman_ver="$(newman --version | head -n1 | cut -d" " -f4)"
+    if [ "$(printf "$newman_required_ver\n$current_newman_ver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$current_newman_ver" ] && [ "$current_newman_ver" != "$newman_required_ver" ]; then 
+        printf "\nERROR: A newer version of Newman (%s) is required. See https://github.com/postmanlabs/newman/blob/develop/MIGRATION.md. Aborting" "$newman_required_ver" >&2
+        exit 1
+    fi
+
+    # newman 3.1+ requires node to be > 4
+    local current_node_ver="$(node --version | cut -d "v" -f 2 )"
+    if [ "$(printf "$node_required_ver\n$current_node_ver" | sort -t '.' -k 1,1 -k 2,2 -k 3,3 -k 4,4 -g | head -n1)" == "$current_node_ver" ] && [ "$current_node_ver" != "$node_required_ver" ]; then 
+        printf "\nERROR: A newer version of Node (%s) is required for Newman %s. Aborting" "$node_required_ver" "$newman_required_ver" >&2
         exit 1
     fi
 }

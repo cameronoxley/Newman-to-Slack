@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 - None
 
+## [2.1.0] - 2016-08-27
+
+### Added
+- Check for node version
+
 ## [2.0.1] - 2016-08-26
 
 ### Added
