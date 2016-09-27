@@ -4,6 +4,7 @@
 Runs a Newman test script and outputs the summary to a Slack webhook 
 
 [![Build Status](https://travis-ci.org/cameronoxley/Newman-to-Slack.svg?branch=master)](https://travis-ci.org/cameronoxley/Newman-to-Slack)
+[![Newman Version](https://img.shields.io/badge/newman-v3.1.0-blue.svg)](https://github.com/postmanlabs/newman/releases)
 
 ##Getting Started
 
@@ -42,6 +43,9 @@ $ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.
 ```
 
 <img src="newman-slack-output.png" />
+
+## Issues
+Permission issues? Try `chmod 744 Newman-to-Slack.sh` first.
 
 ## Changelog
 
