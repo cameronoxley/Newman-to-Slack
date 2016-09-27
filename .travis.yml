@@ -13,8 +13,5 @@ before_install:
   - npm install newman --global;
 script:
   - bats --tap test/
-after_script:
-  - echo "`./Newman-to-Slack.sh`"
-  - ./Newman-to-Slack.sh -c $COLLECTION -w $SLACK_WEBHOOK
 notifications:
   - on_success: never
