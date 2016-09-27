@@ -7,4 +7,7 @@ before_install:
 script:
   - bats --tap test/
 after_script:
-  - echo "`./Newman-to-Slack.sh -c $COLLECTION -w $SLACK_WEBHOOK`"
+  - echo "`./Newman-to-Slack.sh`"
+  - ./Newman-to-Slack.sh -c $COLLECTION -w $SLACK_WEBHOOK
+notifications:
+  - on_success: never
