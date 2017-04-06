@@ -5,7 +5,7 @@ Runs a Newman test script and outputs the summary to a Slack webhook
 
 [![Build Status](https://travis-ci.org/cameronoxley/Newman-to-Slack.svg?branch=master)](https://travis-ci.org/cameronoxley/Newman-to-Slack)
 
-##Getting Started
+## Getting Started
 
 1. [Install Newman v3+](https://github.com/postmanlabs/newman): ```$ npm install -g newman``` (Requires [Node v4+](https://nodejs.org/en/download/package-manager/))
 2. [Create a new Slack incoming webhook](https://my.slack.com/services/new/incoming-webhook/) and copy your webhook URL
@@ -14,7 +14,7 @@ Runs a Newman test script and outputs the summary to a Slack webhook
 
 Thats it!
 
-###Usage
+### Usage
 
 ```bash
 Newman-to-Slack.sh -- Runs a Newman test script and outputs the summary to a Slack webhook
@@ -33,9 +33,9 @@ Newman-to-Slack.sh -- Runs a Newman test script and outputs the summary to a Sla
     Where: -c [arg] and -w [url] is required
 ```
 
-###Examples
+### Examples
 
-######Run a collection and post the summary to a Slack channel
+##### Run a collection and post the summary to a Slack channel
 
 ```bash
 $ ./Newman-to-Slack.sh -c mycollection.json.postman_collection -w https://hooks.slack.com/services/url
