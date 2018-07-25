@@ -243,8 +243,8 @@ validate_check_args() {
         global="-g $global"
     fi
 
-    if [ -n "$env" ] ; then
-        env="-e $env"
+    if [ -n "$environment" ] ; then
+        env="-e $environment"
     fi
 }
 
